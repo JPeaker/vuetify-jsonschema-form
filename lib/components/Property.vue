@@ -1,6 +1,9 @@
 <template>
   <!-- Hide const ? Or make a readonly field -->
-  <div v-if="fullSchema && fullSchema.const === undefined && fullSchema['x-display'] !== 'hidden'" class="vjsf-property">
+  <v-flex
+    v-if="fullSchema && fullSchema.const === undefined && fullSchema['x-display'] !== 'hidden'"
+    :class="classes"
+  >
     <!-- Date picker -->
     <v-menu v-if="fullSchema.type === 'string' && ['date', 'date-time'].includes(fullSchema.format)" ref="menu" v-model="menu" :close-on-content-click="false"
             :nudge-right="40"
@@ -101,6 +104,7 @@
         :name="fullKey"
         :label="label"
         :required="required"
+        :placeholder="placeholder"
         :rules="rules"
         :disabled="disabled"
         :clearable="!required"
@@ -587,7 +591,7 @@
     <p v-else-if="options.debug">
       Unsupported type "{{ fullSchema.type }}" - {{ fullSchema }}
     </p>
-  </div>
+  </v-flex>
 </template>
 
 <script>
@@ -621,12 +625,17 @@ export default {
     fullSchema() {
       return schemaUtils.prepareFullSchema(this.schema, this.modelWrapper, this.modelKey)
     },
+    classes() {
+      return Object.assign({}, this.fullSchema['x-itemClasses'], { 'vjsf-property': true });
+    },
     htmlDescription() {
       return (this.fullSchema && this.fullSchema.description) ? md.render(this.fullSchema.description) : null
     },
     fullKey() { return (this.parentKey + this.modelKey).replace('root.', '') },
     label() { return this.fullSchema.title || (typeof this.modelKey === 'string' ? this.modelKey : '') },
-    placeholder() { return this.fullSchema.placeholder || 'placeholder' },
+    placeholder() {
+      return this.fullSchema.placeholder || 'placeholder'
+    },
     rules() {
       return schemaUtils.getRules(this.fullSchema, this.required, this.options)
     },

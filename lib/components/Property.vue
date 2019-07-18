@@ -626,6 +626,7 @@ export default {
     },
     fullKey() { return (this.parentKey + this.modelKey).replace('root.', '') },
     label() { return this.fullSchema.title || (typeof this.modelKey === 'string' ? this.modelKey : '') },
+    placeholder() { return this.fullSchema.placeholder || 'placeholder' },
     rules() {
       return schemaUtils.getRules(this.fullSchema, this.required, this.options)
     },
